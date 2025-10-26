@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter & PDF Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Responsive Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand brand" href="/">SpotConvert</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#image-conversion" role="tab">Image Conversion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pdf-tools" role="tab">PDF Tools</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <!-- Instructions Section -->
+        <div class="instructions text-center mb-4" role="region" aria-label="Instructions">
+            <h1 class="text-center mb-3">File Converter & PDF Tools</h1>
+            <p class="lead">Convert your files easily with our tool</p>
+            <div class="supported-formats mt-2">
+                <p>Supported formats: <strong>PNG, JPG, WebP</strong> for images and <strong>PDF</strong> for documents</p>
+            </div>
+        </div>
+        
+        <!-- Image Conversion Section -->
+        <div class="card mb-4" id="image-conversion" role="region" aria-label="Image Conversion">
+            <div class="card-header">
+                <h4>Image Converter</h4>
+            </div>
+            <div class="card-body">
+                <div id="dropzone" class="dropzone mb-3" role="button" aria-label="Drop files here or click to upload">
+                    <form action="{{ url_for('convert_image') }}" method="post" enctype="multipart/form-data" id="image-form">
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label visually-hidden">Select Image</label>
+                            <input type="file" class="form-control" id="imageFile" name="file" 
+                                   accept=".png,.jpg,.jpeg,.webp" required 
+                                   aria-label="Select image file for conversion">
+                            <div class="dropzone-message">Drop files here or click to upload</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="format-select" class="form-label">Convert to:</label>
+                            <select class="form-select" id="format-select" name="format" required 
+                                    aria-label="Select target format">
+                                <option value="png">PNG</option>
+                                <option value="jpg">JPG</option>
+                                <option value="webp">WebP</option>
+                                <option value="gif" disabled>GIF (not supported)</option>
+                                <option value="tiff" disabled>TIFF (not supported)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-spotify" id="convert-button" 
+                                aria-label="Convert image">
+                            Convert Image
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress d-none mb-3" role="progressbar" aria-label="Conversion progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%" 
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div class="alert alert-success success-message d-none" role="alert"></div>
+                <div class="alert alert-danger error-message d-none" role="alert"></div>
+            </div>
+        </div>
+
+        <!-- PDF Compression Section -->
+        <div class="card mb-4" id="pdf-tools" role="region" aria-label="PDF Compression">
+            <div class="card-header">
+                <h4>PDF Compressor</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('compress_pdf') }}" method="post" enctype="multipart/form-data" id="compress-form">
+                    <div class="mb-3">
+                        <label for="pdfFile" class="form-label">Select PDF</label>
+                        <input type="file" class="form-control" id="pdfFile" name="file" 
+                               accept=".pdf" required aria-label="Select PDF file for compression">
+                    </div>
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Compression level</label>
+                        <select class="form-select" id="level" name="level" 
+                                aria-label="Select compression level">
+                            <option value="screen">Smallest (screen)</option>
+                            <option value="ebook" selected>Medium (ebook)</option>
+                            <option value="printer">High (printer)</option>
+                            <option value="prepress">Best quality (prepress)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-spotify" id="compress-button" 
+                            aria-label="Compress PDF">
+                        Compress PDF
+                    </button>
+                </form>
+
+                <!-- Progress Bar -->
+                <div class="progress d-none mb-3" role="progressbar" aria-label="Compression progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%" 
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div class="alert alert-success success-message d-none" role="alert"></div>
+                <div class="alert alert-danger error-message d-none" role="alert"></div>
+
+                <!-- Retry Button (shown on error) -->
+                <button class="btn btn-spotify retry-button d-none mt-3" 
+                        aria-label="Retry compression">
+                    Retry
+                </button>
+            </div>
+        </div>
+
+        <!-- PDF Merger Section -->
+        <div class="card mb-4" role="region" aria-label="PDF Merger">
+            <div class="card-header">
+                <h4>PDF Merger</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('merge_pdf') }}" method="post" enctype="multipart/form-data" id="merge-form">
+                    <div class="mb-3">
+                        <label for="pdfFiles" class="form-label">Select Multiple PDFs</label>
+                        <input type="file" class="form-control" id="pdfFiles" name="files[]" 
+                               accept=".pdf" multiple required aria-label="Select PDF files to merge">
+                    </div>
+                    <button type="submit" class="btn btn-spotify" id="merge-button"
+                            aria-label="Merge PDFs">
+                        Merge PDFs
+                    </button>
+                </form>
+
+                <!-- Progress Bar -->
+                <div class="progress d-none mb-3" role="progressbar" aria-label="Merge progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%" 
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div class="alert alert-success success-message d-none" role="alert"></div>
+                <div class="alert alert-danger error-message d-none" role="alert"></div>
+            </div>
+        </div>
+
+        <!-- Conversion History -->
+        <div class="card mb-4" role="region" aria-label="Conversion History">
+            <div class="card-header">
+                <h4>Recent Conversions</h4>
+            </div>
+            <div class="card-body">
+                <div class="conversion-history" aria-live="polite">
+                    <!-- History items will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-4 py-3" role="contentinfo">
+        <div class="container">
+            <div class="footer-note text-center">
+                Built with <span aria-label="love">❤️</span> — 
+                <span class="team-members">Daksh Pote, Prathmesh Gaikwad, Sukanya Bhaskar</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dropzone functionality
+            const dropzone = document.getElementById('dropzone');
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                dropzone.classList.add('dragover');
+            }
+
+            function unhighlight(e) {
+                dropzone.classList.remove('dragover');
+            }
+
+            function downloadBlob(blob, filename) {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            }
+
+            function handleResponse(response) {
+                const contentType = response.headers.get('Content-Type');
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'downloaded_file';
+                
+                // Extract filename from Content-Disposition
+                if (contentDisposition) {
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                // Add appropriate extension based on content type
+                if (!filename.includes('.')) {
+                    if (contentType === 'image/jpeg') filename += '.jpg';
+                    else if (contentType === 'image/png') filename += '.png';
+                    else if (contentType === 'image/webp') filename += '.webp';
+                    else if (contentType === 'application/pdf') filename += '.pdf';
+                }
+
+                return response.blob().then(blob => {
+                    downloadBlob(blob, filename);
+                    return { success: true, filename };
+                });
+            }
+
+            function showError(formElement, error) {
+                const errorMsg = formElement.querySelector('.error-message');
+                const retryBtn = formElement.querySelector('.retry-button');
+                
+                errorMsg.textContent = error;
+                errorMsg.classList.remove('d-none');
+                
+                if (retryBtn) {
+                    retryBtn.classList.remove('d-none');
+                    retryBtn.onclick = () => {
+                        errorMsg.classList.add('d-none');
+                        retryBtn.classList.add('d-none');
+                    };
+                }
+            }
+
+            function updateProgress(progressBar, value) {
+                if (!progressBar) return;
+                const progressBarInner = progressBar.querySelector('.progress-bar');
+                progressBar.classList.remove('d-none');
+                progressBarInner.style.width = value + '%';
+                progressBarInner.setAttribute('aria-valuenow', value);
+            }
+
+            function addToHistory(operation, filename) {
+                const history = document.querySelector('.conversion-history');
+                const item = document.createElement('div');
+                item.className = 'conversion-history-item alert alert-success mt-2';
+                item.innerHTML = `
+                    <strong>${operation}:</strong> ${filename}
+                    <small class="float-end">${new Date().toLocaleTimeString()}</small>
+                `;
+                history.insertBefore(item, history.firstChild);
+            }
+
+            // Form submission handling
+            const formConfig = {
+                'image-form': {
+                    url: '{{ url_for("convert_image") }}',
+                    operation: 'Image Conversion'
+                },
+                'compress-form': {
+                    url: '{{ url_for("compress_pdf") }}',
+                    operation: 'PDF Compression'
+                },
+                'merge-form': {
+                    url: '{{ url_for("merge_pdf") }}',
+                    operation: 'PDF Merge'
+                }
+            };
+
+            Object.keys(formConfig).forEach(formId => {
+                const form = document.getElementById(formId);
+                if (!form) return;
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const config = formConfig[formId];
+                    const cardBody = this.closest('.card-body');
+                    const progressBar = cardBody.querySelector('.progress');
+                    const successMsg = cardBody.querySelector('.success-message');
+                    
+                    // Reset messages
+                    cardBody.querySelectorAll('.alert').forEach(alert => alert.classList.add('d-none'));
+                    
+                    // Start progress
+                    updateProgress(progressBar, 0);
+                    const progressInterval = setInterval(() => {
+                        const currentProgress = parseInt(progressBar.querySelector('.progress-bar').getAttribute('aria-valuenow'));
+                        if (currentProgress < 90) {
+                            updateProgress(progressBar, currentProgress + 10);
+                        }
+                    }, 200);
+
+                    fetch(config.url, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status} ${response.statusText}`);
+                        }
+                        updateProgress(progressBar, 100);
+                        return handleResponse(response);
+                    })
+                    .then(result => {
+                        if (result.success) {
+                            // Show success message
+                            successMsg.textContent = `${config.operation} successful! Downloaded: ${result.filename}`;
+                            successMsg.classList.remove('d-none');
+                            
+                            // Add to history
+                            addToHistory(config.operation, result.filename);
+                        }
+                    })
+                    .catch(error => {
+                        showError(cardBody, error.message);
+                    })
+                    .finally(() => {
+                        clearInterval(progressInterval);
+                        setTimeout(() => {
+                            progressBar.classList.add('d-none');
+                        }, 500);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

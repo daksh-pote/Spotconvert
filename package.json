@@ -1,0 +1,15 @@
+{
+  "name": "spotconvert",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": ".venv\\Scripts\\python.exe app.py",
+    "test:behave": ".venv\\Scripts\\python.exe -m behave -f pretty",
+    "test:all": "npm run test:behave",
+    "test:unit": ".venv\\Scripts\\python.exe -m behave -f pretty features/01_unit_tests.feature",
+    "test:integration": ".venv\\Scripts\\python.exe -m behave -f pretty features/02_integration_tests.feature",
+    "test:functional": ".venv\\Scripts\\python.exe -m behave -f pretty features/03_functional_tests.feature",
+    "test:ui": ".venv\\Scripts\\python.exe -m behave -f pretty features/04_ui_tests.feature",
+    "test:acceptance": ".venv\\Scripts\\python.exe -m behave -f pretty features/05_acceptance_tests.feature"
+  }
+}

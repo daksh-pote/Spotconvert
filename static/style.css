@@ -1,0 +1,96 @@
+/* Spotify-like dark theme */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg: #121212;
+    --panel: #181818;
+    --muted: #b3b3b3;
+    --accent: #1DB954; /* Spotify green */
+    --card-shadow: rgba(6, 146, 18, 0.6);
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background-color: var(--bg);
+    color: #ffffff44;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 980px;
+}
+
+.navbar-spotify {
+    background: linear-gradient(90deg, rgba(24,24,24,1) 0%, rgba(25,25,25,0.9) 100%);
+    border-bottom: 1px solid rgba(59, 224, 9, 0.441);
+    padding: 0.75rem 1rem;
+}
+
+.navbar-spotify .brand {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 1.1rem;
+}
+
+.card {
+    background: linear-gradient(180deg, rgba(24,24,24,0.85), rgba(20,20,20,0.85));
+    border: 1px solid rgb(17, 218, 17);
+    box-shadow: 0 6px 18px var(--card-shadow);
+    color: #fff;
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.card h4 {
+    color: #fff;
+}
+
+.form-label, label {
+    color: var(--muted);
+}
+
+.form-control {
+    background: #0f0f0f;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #fff;
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.15rem rgba(29,185,84,0.12);
+    border-color: rgba(29,185,84,0.6);
+}
+
+.btn-spotify {
+    background: linear-gradient(180deg, var(--accent), #14a74a);
+    color: #000;
+    border: none;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+}
+
+.btn-spotify:hover {
+    filter: brightness(0.95);
+}
+
+/* Layout tweaks */
+.mt-5 { margin-top: 3rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+
+.footer-note {
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1.25rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+    .container { padding: 1rem; }
+}
